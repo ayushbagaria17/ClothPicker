@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ClothPicker</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="facebook_app_id">1863350183932951</string>
+    <string name="fb_login_protocol_scheme">fb1863350183932951</string>
+    <string name="label_cloth_picker">Cloth Picker</string>
+    <string name="label_uploaded_on">Uploaded On :</string>
+    <string name="label_status">Status :</string>
+    <string name="error_try_again">Something went wrong, please try again.</string>
+    <string name="label_in_progress">In progress</string>
+    <string name="label_paused">Paused</string>
+    <string name="label_complete">Complete</string>
+    <string name="label_failed">Failed</string>
+</resources>

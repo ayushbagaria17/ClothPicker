@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "895853789738",
+    "project_id": "clothpicker-dcebe"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895853789738:android:b44d9e616096e72e",
+        "android_client_info": {
+          "package_name": "in.agrostar.ulink.clothpicker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895853789738-p1g9vkc1rqn315p5ikskhmph3dhs0htd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.agrostar.ulink.clothpicker",
+            "certificate_hash": "bb1121b35ff287839524751b705a5f1b1f0b7236"
+          }
+        },
+        {
+          "client_id": "895853789738-pa01235alncaamemjeueq01rt9c2br93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUcX0qYMrbC_9XTnBKw6FAWAgW_O7LByg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
