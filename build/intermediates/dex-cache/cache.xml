@@ -3,6 +3,24 @@
 
     <item
         is-multidex="true"
+        jar="/home/ayush/ayush/work/android/ClothPick/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="510aa6efc159983dfbffa676a0dae37568c0a46f">
+        <dex dex="/home/ayush/ayush/work/android/ClothPick/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_9f4b904a5f9d81795b9b61a0eded0c435f227255/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/ayush/ayush/work/android/ClothPick/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ad028f7ab11008bee81a9e0d15d0678a74602a12">
+        <dex dex="/home/ayush/ayush/work/android/ClothPick/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_1bd469fb966f6bc90d954ae4e8561df8f117c05d/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/home/ayush/ayush/work/android/ClothPicker/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
