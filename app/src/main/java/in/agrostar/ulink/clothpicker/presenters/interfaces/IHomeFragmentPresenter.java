@@ -1,5 +1,6 @@
 package in.agrostar.ulink.clothpicker.presenters.interfaces;
 
+import in.agrostar.ulink.clothpicker.domain.UploadType;
 import in.agrostar.ulink.clothpicker.ui.fragment.interfaces.IHomeFragment;
 
 /**
@@ -7,9 +8,11 @@ import in.agrostar.ulink.clothpicker.ui.fragment.interfaces.IHomeFragment;
  */
 
 public interface IHomeFragmentPresenter extends IBasePresenter<IHomeFragment> {
-    void uploadImage(String captureImagePath);
+    void uploadImage(String captureImagePath, UploadType uploadType);
 
     void deleteUpload(int id,int position);
 
     void resumeUpload(int id);
+
+    void onResume();
 }

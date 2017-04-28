@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
 import in.agrostar.ulink.clothpicker.models.BookmarkModel;
 import in.agrostar.ulink.clothpicker.presenters.interfaces.IBookmarkPresenter;
 import in.agrostar.ulink.clothpicker.ui.fragment.interfaces.IBookmarkFragment;
@@ -56,16 +58,26 @@ public class BookmarkFragmentPresenter implements IBookmarkPresenter {
 
     @Override
     public void getData() {
-        Subscription subscription = Observable.from(model.getSuggestions())
-                .filter(new Func1<Suggestion, Boolean>() {
+        Subscription subscription = Observable.just(model.getSuggestions())
+                .flatMap(new Func1<List<Suggestion1>, Observable<?>>() {
                     @Override
-                    public Boolean call(Suggestion suggestion) {
-                        return suggestion.isHasAlreadySeen() && suggestion.isFlag();
+                    public Observable<?> call(List<Suggestion1> suggestions) {
+                        return suggestions == null
+                                ?  Observable.empty()
+                                : Observable.from(suggestions);
+                    }
+                }).filter(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object suggestion) {
+                        if (suggestion != null && suggestion instanceof Suggestion1) {
+                            return ((Suggestion1) suggestion).isAlreadySeen() && ((Suggestion1) suggestion).isFlag();
+                        }
+                        return null;
                     }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Suggestion>() {
-                    ArrayList<Suggestion> suggestions = new ArrayList<Suggestion>();
+                .subscribe(new Observer<Object>() {
+                    ArrayList<Suggestion1> suggestions = new ArrayList<Suggestion1>();
                     @Override
                     public void onCompleted() {
                         view.showData(suggestions);
@@ -77,8 +89,9 @@ public class BookmarkFragmentPresenter implements IBookmarkPresenter {
                     }
 
                     @Override
-                    public void onNext(Suggestion suggestion) {
-                        suggestions.add(suggestion);
+                    public void onNext(Object suggestion) {
+                        if (suggestion != null && suggestion instanceof  Suggestion1)
+                        suggestions.add((Suggestion1) suggestion);
                     }
                 });
         subscriptions.add(subscription);

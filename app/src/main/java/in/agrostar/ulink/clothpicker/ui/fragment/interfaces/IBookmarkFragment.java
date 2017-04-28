@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import java.util.ArrayList;
 
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
 import in.agrostar.ulink.clothpicker.ui.activity.interfaces.BaseView;
 
 /**
@@ -12,7 +13,7 @@ import in.agrostar.ulink.clothpicker.ui.activity.interfaces.BaseView;
  */
 
 public interface IBookmarkFragment extends BaseView {
-    void showData(ArrayList<Suggestion> suggestions);
+    void showData(ArrayList<Suggestion1> suggestions);
 
     void shareBitmap(Bitmap bitmap);
 }

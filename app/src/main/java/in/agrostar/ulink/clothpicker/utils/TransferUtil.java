@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -140,7 +141,11 @@ public class TransferUtil {
         map.put("bytes",
                 getBytesString(observer.getBytesTransferred()) + "/"
                         + getBytesString(observer.getBytesTotal()));
-        map.put("state", observer.getState());
+        if (progress == 100) {
+            map.put("state", TransferState.COMPLETED);
+        } else {
+            map.put("state", observer.getState());
+        }
         map.put("percentage", progress + "%");
     }
 }

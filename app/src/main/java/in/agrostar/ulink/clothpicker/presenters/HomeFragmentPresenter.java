@@ -12,10 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import in.agrostar.ulink.clothpicker.R;
+import in.agrostar.ulink.clothpicker.domain.UploadType;
 import in.agrostar.ulink.clothpicker.models.HomeFragmentModel;
 import in.agrostar.ulink.clothpicker.presenters.interfaces.IHomeFragmentPresenter;
 import in.agrostar.ulink.clothpicker.ui.fragment.interfaces.IHomeFragment;
 import in.agrostar.ulink.clothpicker.utils.TransferUtil;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -37,6 +42,7 @@ public class HomeFragmentPresenter implements IHomeFragmentPresenter, TransferLi
         model  = new HomeFragmentModel(view.getContext());
         transferRecordMaps = new ArrayList<>();
 
+
     }
 
     @Override
@@ -57,23 +63,24 @@ public class HomeFragmentPresenter implements IHomeFragmentPresenter, TransferLi
     public void onStateChanged(int id, TransferState state) {
         if (state.equals(TransferState.COMPLETED)) {
             //push url to backend
+            model.updateUpload(id);
            model.pushFileToBackend();
         }
-       updateList();
+       updateList(id);
     }
 
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-        updateList();
+        updateList(id);
     }
 
     @Override
     public void onError(int id, Exception ex) {
-        updateList();
+        updateList(id);
     }
 
     @Override
-    public void uploadImage(String filePath) {
+    public void uploadImage(String filePath, UploadType type) {
         if (filePath == null) {
             //TODO handle this properly
             view.showErrorDialog(view.getContext().getString(R.string.error_try_again));
@@ -85,6 +92,7 @@ public class HomeFragmentPresenter implements IHomeFragmentPresenter, TransferLi
         File file = new File(filePath);
         TransferObserver observer = model.uploadFile(file);
         observer.setTransferListener(this);
+        model.addUpload(observer, type);
 
     }
 
@@ -94,7 +102,7 @@ public class HomeFragmentPresenter implements IHomeFragmentPresenter, TransferLi
         model.delete(id);
         observers.remove(position);
         transferRecordMaps.remove(position);
-        updateList();
+        updateList(id);
     }
 
     @Override
@@ -102,7 +110,17 @@ public class HomeFragmentPresenter implements IHomeFragmentPresenter, TransferLi
         model.resume(id).setTransferListener(this);
     }
 
-    private void updateList() {
+    @Override
+    public void onResume() {
+        model.getUploadMap();
+//        Subscription subscription = Observable.just(model.getUploadMap())
+//                .subscribeOn(Schedulers.computation())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe();
+//        subscriptions.add(subscription);
+    }
+
+    private void updateList(int id) {
         TransferObserver observer = null;
         HashMap<String, Object> map = null;
         for (int i = 0; i < observers.size(); i++) {

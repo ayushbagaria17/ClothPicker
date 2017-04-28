@@ -3,8 +3,10 @@ package in.agrostar.ulink.clothpicker.presenters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
 import in.agrostar.ulink.clothpicker.models.ClothPickerModel;
 import in.agrostar.ulink.clothpicker.presenters.interfaces.IClothPickerFragmentPresenter;
 import in.agrostar.ulink.clothpicker.ui.fragment.interfaces.IClothPickerFragment;
@@ -49,17 +51,35 @@ public class ClothPickerFragmentPresenter implements IClothPickerFragmentPresent
 
     @Override
     public void getData() {
-        Subscription subscription = Observable.from(model.getSuggestions())
-                .filter(new Func1<Suggestion, Boolean>() {
+        Subscription subscription = Observable.just(model.getSuggestions())
+                .flatMap(new Func1<List<Suggestion1>, Observable<?>>() {
                     @Override
-                    public Boolean call(Suggestion suggestion) {
-                        return !suggestion.isHasAlreadySeen();
+                    public Observable<?> call(List<Suggestion1> suggestions) {
+                        return suggestions == null
+                                ?  Observable.empty()
+                                : Observable.from(suggestions);
+                    }
+                }).filter(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object suggestion) {
+                        if (suggestion != null && suggestion instanceof Suggestion1) {
+                            return !((Suggestion1) suggestion).isAlreadySeen();
+                        }
+                        return null;
                     }
                 }).subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Suggestion>() {
-                    HashMap<Integer,Suggestion> suggestions = new  HashMap<Integer,Suggestion>();
+                .subscribe(new Observer<Object>() {
+                    HashMap<Integer,Suggestion1> suggestions = new  HashMap<Integer,Suggestion1>();
                     int position = 0;
+                    @Override
+                    public void onNext(Object suggestion) {
+                        if (suggestion != null) {
+                            suggestions.put(position, (Suggestion1) suggestion);
+                            position++;
+                        }
+                    }
+
                     @Override
                     public void onCompleted() {
                         view.pushData(suggestions);
@@ -69,19 +89,12 @@ public class ClothPickerFragmentPresenter implements IClothPickerFragmentPresent
                     public void onError(Throwable e) {
 
                     }
-
-                    @Override
-                    public void onNext(Suggestion suggestion) {
-
-                        suggestions.put(position,suggestion);
-                        position++;
-                    }
                 });
         subscriptions.add(subscription);
     }
 
     @Override
-    public void saveSuggestions(HashMap<Integer, Suggestion> suggestions) {
+    public void saveSuggestions(HashMap<Integer, Suggestion1> suggestions) {
         if (suggestions != null) {
             Subscription subscription = Observable.just(model.saveSuggestions(suggestions))
                     .observeOn(Schedulers.io())

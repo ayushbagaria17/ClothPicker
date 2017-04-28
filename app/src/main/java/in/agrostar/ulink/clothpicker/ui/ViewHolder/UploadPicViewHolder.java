@@ -53,6 +53,8 @@ public class UploadPicViewHolder extends RecyclerView.ViewHolder{
             tvUploadStatus.setText(R.string.label_failed);
         }
 
+        // adding a hack for now as  delete functionality should not be there at all
+        retryOrDeletePic.setVisibility(View.GONE);
         Glide.with(context)
                 .load(new File(imagePath))
                 .centerCrop()

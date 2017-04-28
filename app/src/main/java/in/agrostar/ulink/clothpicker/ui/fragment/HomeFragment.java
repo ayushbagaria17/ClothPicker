@@ -2,9 +2,11 @@ package in.agrostar.ulink.clothpicker.ui.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -22,12 +24,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -46,10 +49,9 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import in.agrostar.ulink.clothpicker.BuildConfig;
 import in.agrostar.ulink.clothpicker.R;
+import in.agrostar.ulink.clothpicker.domain.UploadType;
 import in.agrostar.ulink.clothpicker.presenters.HomeFragmentPresenter;
-import in.agrostar.ulink.clothpicker.ui.activity.HomeActivity;
 import in.agrostar.ulink.clothpicker.ui.activity.interfaces.IBaseUI;
 import in.agrostar.ulink.clothpicker.ui.adapter.UploadPicAdapter;
 import in.agrostar.ulink.clothpicker.ui.fragment.interfaces.IHomeFragment;
@@ -70,6 +72,8 @@ public class HomeFragment extends BaseFragment implements IBaseUI, IHomeFragment
     private LinearLayoutManager layoutManager;
     private UploadPicAdapter adapter;
     private String tempFilePath;
+    private UploadType uploadType;
+    private Dialog dialogSelectType;
 
     public static Fragment newInstance() {
         Bundle args = new Bundle();
@@ -80,8 +84,6 @@ public class HomeFragment extends BaseFragment implements IBaseUI, IHomeFragment
 
     @InjectView(R.id.fab)
     FloatingActionButton fab;
-
-
 
     @InjectView(R.id.rv_upload_pic)
     RecyclerView recylerView;
@@ -193,7 +195,41 @@ public class HomeFragment extends BaseFragment implements IBaseUI, IHomeFragment
 
     @OnClick(R.id.fab)
     void getImageFromCameraOrGallery() {
-        startActivityForResult(getPickImageChooserIntent(), REQUEST_CODE_GET_IMAGE);
+        showDialog();
+
+    }
+
+    private void showDialog() {
+        dialogSelectType = new Dialog(context);
+        dialogSelectType.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogSelectType.setContentView(R.layout.dialog_select_type);
+        dialogSelectType.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+
+            }
+        });
+
+        Button btnRetry = (Button) dialogSelectType.findViewById(R.id.btn_shirt);
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(getPickImageChooserIntent(), REQUEST_CODE_GET_IMAGE);
+                uploadType =UploadType.SHIRT;
+                dialogSelectType.dismiss();
+            }
+        });
+
+        Button btnCancel = (Button) dialogSelectType.findViewById(R.id.btn_trouser);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(getPickImageChooserIntent(), REQUEST_CODE_GET_IMAGE);
+                uploadType =UploadType.TROUSER;
+                dialogSelectType.dismiss();
+            }
+        });
+        dialogSelectType.show();
     }
 
     public Intent getPickImageChooserIntent() {
@@ -402,8 +438,9 @@ public class HomeFragment extends BaseFragment implements IBaseUI, IHomeFragment
     @Override
     public void onResume() {
         super.onResume();
+        presenter.onResume();
         if (tempFilePath != null) {
-            presenter.uploadImage(tempFilePath);
+            presenter.uploadImage(tempFilePath, uploadType);
             tempFilePath = null;
         }
         initData();
@@ -420,7 +457,7 @@ public class HomeFragment extends BaseFragment implements IBaseUI, IHomeFragment
     }
     @Override
     public void notifyAdapter() {
-        adapter.notifyDataSetChanged();
+        adapter.setUploadList(transferRecordMaps);
     }
 
     @Override

@@ -29,6 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.agrostar.ulink.clothpicker.R;
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
+import in.agrostar.ulink.clothpicker.domain.UploadObject;
 import in.agrostar.ulink.clothpicker.presenters.BookmarkFragmentPresenter;
 import in.agrostar.ulink.clothpicker.ui.activity.interfaces.IBaseUI;
 import in.agrostar.ulink.clothpicker.ui.adapter.BookmarkAdapter;
@@ -116,43 +118,23 @@ public class BookMarkFragment extends BaseFragment implements IBookmarkFragment,
     }
 
     @Override
-    public void shareClick(Suggestion suggestion) {
+    public void shareClick(Suggestion1 suggestion) {
         Logger.logError("Share Click");
-        presenter.shareImage(suggestion.getImageUrl());
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("image/*");
+        ArrayList<Uri> files = new ArrayList<Uri>();
+        for(UploadObject uploadObject : suggestion.getUploadObjects()) {
+            File file = new File(uploadObject.getFilePath());
+            Uri uri = Uri.fromFile(file);
+            files.add(uri);
+        }
+        i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+        startActivity(Intent.createChooser(i, "Share Image"));
 
     }
 
     public void shareItem(String url) {
-//
-//        try {
-//            Bitmap theBitmap = Glide.
-//                    with(context).
-//                    load(url).
-//                    asBitmap().
-//                    into(-1, -1).
-//                    get();
-//
-//            Intent i = new Intent(Intent.ACTION_SEND);
-//            i.setType("image/*");
-//            i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(theBitmap));
-//            startActivity(Intent.createChooser(i, "Share Image"));
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        Glide.with(context)
-//               .load(url)
-//               .asBitmap()
-//               .into(new SimpleTarget<Bitmap>() {
-//                   @Override
-//                   public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                       Intent i = new Intent(Intent.ACTION_SEND);
-//                       i.setType("image/*");
-//                       i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(resource));
-//                       startActivity(Intent.createChooser(i, "Share Image"));
-//                   }
-//               });
+
     }
 
     public Uri getLocalBitmapUri(Bitmap bmp) {
@@ -170,7 +152,7 @@ public class BookMarkFragment extends BaseFragment implements IBookmarkFragment,
     }
 
     @Override
-    public void showData(ArrayList<Suggestion> suggestions) {
+    public void showData(ArrayList<Suggestion1> suggestions) {
         adapter.setData(suggestions);
     }
 

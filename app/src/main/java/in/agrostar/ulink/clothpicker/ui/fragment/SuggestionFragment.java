@@ -11,10 +11,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import in.agrostar.ulink.clothpicker.R;
+import in.agrostar.ulink.clothpicker.domain.UploadObject;
+import in.agrostar.ulink.clothpicker.domain.UploadType;
 import in.agrostar.ulink.clothpicker.utils.Logger;
 
 
@@ -26,8 +30,12 @@ public class SuggestionFragment extends BaseFragment {
 
     private Context context;
 
-    @InjectView(R.id.iv_suggestion_image)
-    ImageView ivSuggestionImage;
+    @InjectView(R.id.iv_shirt_image)
+    ImageView ivShirtImage;
+
+    @InjectView(R.id.iv_trouser_image)
+    ImageView ivTrouserImage;
+
 
     @InjectView(R.id.iv_liked)
     ImageView likedBtn;
@@ -35,20 +43,24 @@ public class SuggestionFragment extends BaseFragment {
     @InjectView(R.id.iv_unliked)
     ImageView unlikedBtn;
 
-    @InjectView(R.id.tv_description)
-    TextView tvDescription;
+
     private int position;
-    private String description;
+    private String shirtPath;
+    private String trouserPath;
     private String imageUrl;
 
     private SuggestionFragmentListener listener;
 
-    public static SuggestionFragment newInstance(int position, String description, String imageUrl) {
+    public static SuggestionFragment newInstance(int position, UploadObject uploadObject1, UploadObject uploadObject2) {
 
         Bundle args = new Bundle();
         args.putInt("position",position);
-        args.putString("description", description);
-        args.putString("imageUrl", imageUrl);
+        if (uploadObject1.getType().toString().equalsIgnoreCase(UploadType.TROUSER.toString())) {
+            args.putString("shirtPath", uploadObject2.getFilePath());
+            args.putString("trouserPath", uploadObject1.getFilePath());
+        }
+        args.putString("shirtPath", uploadObject1.getFilePath());
+        args.putString("trouserPath", uploadObject2.getFilePath());
 
         SuggestionFragment fragment = new SuggestionFragment();
         fragment.setArguments(args);
@@ -82,15 +94,20 @@ public class SuggestionFragment extends BaseFragment {
     private void initArgs() {
         Bundle args = getArguments();
         position = args.getInt("position");
-        description = args.getString("description");
-        imageUrl = args.getString("imageUrl");
+        shirtPath = args.getString("shirtPath");
+        trouserPath = args.getString("trouserPath");
     }
 
     private void initView() {
-        tvDescription.setText(description);
+//        tvDescription.setText(description);
+        File file = new File(shirtPath);
         Glide.with(context)
-                .load(imageUrl)
-                .centerCrop().into(ivSuggestionImage);
+                .load(file)
+                .centerCrop().into(ivShirtImage);
+         file = new File(trouserPath);
+        Glide.with(context)
+                .load(file)
+                .centerCrop().into(ivTrouserImage);
     }
 
     @OnClick(R.id.iv_unliked)

@@ -17,6 +17,9 @@ public class Constants {
         public static final String GOOGLE = "google";
         public static final String USER_TOKEN = "token" ;
         public static final String LOGIN_SOURCE = "loginSource" ;
+        public static final String UPLOAD_MAP_TROUSER = "uploadMapTrouser";
+        public static final String UPLOAD_MAP_SHIRT = "uploadMapShirt";
+        public static final String SUGGESTION_POOL = "suggestion_pool";
         public static String userName = "userName";
     }
 

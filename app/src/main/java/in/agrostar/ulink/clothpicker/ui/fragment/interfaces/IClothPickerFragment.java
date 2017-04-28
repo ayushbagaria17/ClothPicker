@@ -3,6 +3,7 @@ package in.agrostar.ulink.clothpicker.ui.fragment.interfaces;
 import java.util.HashMap;
 
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
 import in.agrostar.ulink.clothpicker.ui.activity.interfaces.BaseView;
 
 /**
@@ -10,5 +11,5 @@ import in.agrostar.ulink.clothpicker.ui.activity.interfaces.BaseView;
  */
 
 public interface IClothPickerFragment extends BaseView {
-    void pushData( HashMap<Integer,Suggestion> suggestions);
+    void pushData( HashMap<Integer,Suggestion1> suggestions);
 }

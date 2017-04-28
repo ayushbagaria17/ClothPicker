@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.agrostar.ulink.clothpicker.R;
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
 import in.agrostar.ulink.clothpicker.presenters.ClothPickerFragmentPresenter;
 import in.agrostar.ulink.clothpicker.ui.activity.interfaces.IBaseUI;
 import in.agrostar.ulink.clothpicker.ui.custom.CustomViewPager;
@@ -32,8 +33,8 @@ public class ClothPickerFragment extends  BaseFragment implements IClothPickerFr
     CustomViewPager viewPagerPicker;
     private ClothPickerFragmentPresenter presenter;
     private ViewPagerAdapter viewPagerAdapter;
-    private HashMap<Integer, Suggestion> suggestions;
-    private HashMap<Integer, Suggestion> tempSuggestions;
+    private HashMap<Integer, Suggestion1> suggestions;
+    private HashMap<Integer, Suggestion1> tempSuggestions;
 
 
     public static ClothPickerFragment newInstance() {
@@ -101,16 +102,19 @@ public class ClothPickerFragment extends  BaseFragment implements IClothPickerFr
     }
 
     @Override
-    public void pushData( HashMap<Integer,Suggestion> suggestions) {
+    public void pushData( HashMap<Integer,Suggestion1> suggestions) {
         this.suggestions = suggestions;
-        this.
-        viewPagerAdapter.update(suggestions);
+        if (suggestions.size() != 0 )
+            viewPagerAdapter.update(suggestions);
 
     }
 
     @Override
     public void liked(int position) {
         updateSuggestion(true, position);
+        if (suggestions.size() == position + 1) {
+            viewPagerPicker.setVisibility(View.GONE);
+        }
         viewPagerPicker.setCurrentItem(position+1);
     }
 
@@ -118,15 +122,18 @@ public class ClothPickerFragment extends  BaseFragment implements IClothPickerFr
         if (tempSuggestions == null){
             tempSuggestions = new HashMap<>();
         }
-        Suggestion tempSuggestion = suggestions.get(position);
+        Suggestion1 tempSuggestion = suggestions.get(position);
         tempSuggestion.setFlag(likeFlag);
-        tempSuggestion.setHasAlreadySeen(true);
+        tempSuggestion.setAlreadySeen(true);
         tempSuggestions.put(tempSuggestion.getId(),tempSuggestion);
     }
 
     @Override
     public void unLiked(int position) {
         updateSuggestion(false, position);
+        if (suggestions.size() == position + 1) {
+            viewPagerPicker.setVisibility(View.GONE);
+        }
         viewPagerPicker.setCurrentItem(position+1);
     }
 
@@ -138,20 +145,20 @@ public class ClothPickerFragment extends  BaseFragment implements IClothPickerFr
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-        private  HashMap<Integer,Suggestion> suggestions;
+        private  HashMap<Integer,Suggestion1> suggestions;
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
-        public void update( HashMap<Integer,Suggestion> suggestions) {
+        public void update( HashMap<Integer,Suggestion1> suggestions) {
             this.suggestions = suggestions;
             notifyDataSetChanged();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return SuggestionFragment.newInstance(position,suggestions.get(position).getDescription(),suggestions.get(position).getImageUrl());
+            return SuggestionFragment.newInstance(position,suggestions.get(position).getUploadObjects().get(0), suggestions.get(position).getUploadObjects().get(1));
         }
 
         @Override

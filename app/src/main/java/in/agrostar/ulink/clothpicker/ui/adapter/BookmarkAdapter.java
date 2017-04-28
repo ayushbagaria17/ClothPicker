@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import in.agrostar.ulink.clothpicker.R;
 import in.agrostar.ulink.clothpicker.domain.Suggestion;
+import in.agrostar.ulink.clothpicker.domain.Suggestion1;
 import in.agrostar.ulink.clothpicker.ui.ViewHolder.BookmarkViewHolder;
 
 /**
@@ -20,7 +21,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     private final BookMarkAdapterClickListener clickListener;
-    private ArrayList<Suggestion> suggestions;
+    private ArrayList<Suggestion1> suggestions;
     Context context;
     LayoutInflater inflater;
 
@@ -49,10 +50,10 @@ public class BookmarkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((BookmarkViewHolder)holder).pushData(context,suggestions.get(position).getDescription(),suggestions.get(position).getImageUrl());
+        ((BookmarkViewHolder)holder).pushData(context,suggestions.get(position).getUploadObjects());
     }
 
-    void setBookMarkList(ArrayList<Suggestion> suggestions) {
+    void setBookMarkList(ArrayList<Suggestion1> suggestions) {
         this.suggestions = suggestions;
         notifyDataSetChanged();
     }
@@ -65,12 +66,12 @@ public class BookmarkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public void setData(ArrayList<Suggestion> suggestions) {
+    public void setData(ArrayList<Suggestion1> suggestions) {
         this.suggestions = suggestions;
         notifyDataSetChanged();
     }
 
     public interface BookMarkAdapterClickListener {
-        void shareClick(Suggestion suggestion);
+        void shareClick(Suggestion1 suggestion);
     }
 }
